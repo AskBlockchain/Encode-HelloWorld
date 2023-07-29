@@ -114,6 +114,9 @@ The transaction likely failed because the `setText(string newText)` function inc
 ![Failed Transaction](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/HelloWorld%20-%20Failed%20Transaction.png)
 
 
+<br/>
+
+
 # Transaction Comparison Report
 
 This report compares two transactions that were executed on the `HelloWorld` contract. Both transactions called the `transferOwnership(address newOwner)` function, which transfers the ownership of the contract to a new owner.
@@ -145,6 +148,32 @@ In the second transaction, the ownership of the contract was transferred to a ne
 ## Conclusion
 
 While both transactions involved the `transferOwnership(address newOwner)` function, they had different effects. The first transaction did not change the state of the contract, as the ownership was transferred to the existing owner's address. The second transaction, however, did change the state of the contract, as the ownership was transferred to a new address.
+
+
+
+<br/>
+
+
+# Transaction - Function setText 
+
+This report describes a transaction that was executed on the Ethereum network. The transaction sucessfully executed the `setText(string newText)` function of the HelloWorld.sol contract `0xF42070EBFcB1B467D5FEd5A6d3e5957bf263BdE5`.
+
+## Ether Balances and Nonce
+
+The Ether balance of the address `0x498AF4...B27F9652` decreased slightly from `0.49876087929371247 Eth` to `0.498716161292341118 Eth`. This change of `0.000044718001371352 Eth` represents the gas cost of the transaction. The nonce of the address increased from `3` to `4`, indicating that a new transaction was sent from this address.
+
+The Ether balance of the miner (`0x6a7aA9...f12F06a3`) increased by the same amount, representing the gas fee that was paid for the transaction.
+
+## Storage Changes
+
+One storage slot was updated during the transaction:
+
+- **Storage Address 0x0000000000000000000000000000000000000000000000000000000000000000:** The initial value was "Hello World". After the transaction, it was updated with the string "Bonjour!".
+
+## Conclusion
+
+The transaction resulted in the update of one storage slot. This change likely represents the execution of a function that updates the state of a smart contract. In this case, the function likely updates a text message stored in the contract. The decrease in the Ether balance of the address `0x498AF4...B27F9652` and the corresponding increase in the Ether balance of the miner `0x6a7aA9...f12F06a3` represent the gas cost of the transaction.
+
 
 
 
