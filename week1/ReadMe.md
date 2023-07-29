@@ -91,6 +91,11 @@ Four storage slots were updated during the transaction:
 
 The transaction resulted in the update of four storage slots. These changes likely represent the initialization of a smart contract, with the storage slots being used to store the contract's state. The Ethereum address `0x1c042700057891c76d2c95b66bb09c441c5ebd2f` is likely the owner of the contract, and the string "Hello World" is likely an initial state or message of the contract.
 
+# Transactions
+
+<img src="./week1/HelloWorld - Failed Transaction.png" width="200" height="200">
+
+
 
 
 
