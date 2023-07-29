@@ -128,6 +128,8 @@ In the first transaction, the ownership of the contract was transferred to the e
 - The Ether balance of the miner (`0xFf58d7...8837E883`) increased by the same amount, representing the gas fee that was paid for the transaction.
 - No changes were made to the contract's storage, as the owner remained the same.
 
+  ![Transfer Ownership](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Transfer%20Ownership%20New%20Owner.png)
+
 ## Transaction 2: Transfer to New Address
 
 In the second transaction, the ownership of the contract was transferred to a new address (`0x498af4a8a9902e667ee8ffb1d064119eb27f9652`).
@@ -137,6 +139,8 @@ In the second transaction, the ownership of the contract was transferred to a ne
 - The Ether balance of the original owner's address (`0x1c0427...1c5ebd2f`) decreased slightly due to the gas cost of the transaction.
 - The Ether balance of the miner (`0x000000...00000000`) increased by the same amount, representing the gas fee that was paid for the transaction.
 - The contract's storage was updated. The storage address `0x0000000000000000000000000000000000000000000000000000000000000001`, which stores the owner of the contract, was updated with the new owner's address.
+
+![Transfer Ownership newOwner](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Transfer%20Ownership%20New%20Owner.png)
 
 ## Conclusion
 
