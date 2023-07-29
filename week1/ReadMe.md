@@ -5,6 +5,9 @@
 The `HelloWorld` contract is a simple Ethereum smart contract written in Solidity. It allows the owner of the contract to set a text string, which can be retrieved by anyone.
 
 ## Contract Details
+- Contract address: `0xF42070EBFcB1B467D5FEd5A6d3e5957bf263BdE5`
+- Network: Sepolia Testnet
+- [Contract link](https://sepolia.etherscan.io/address/0xf42070ebfcb1b467d5fed5a6d3e5957bf263bde5)
 
 ### State Variables
 
@@ -27,9 +30,9 @@ The constructor sets the `text` state variable to "Hello World" and the `owner` 
 
 - `onlyOwner`: This modifier restricts the `setText` and `transferOwnership` functions to be called only by the owner of the contract. If the caller is not the owner, it reverts the transaction with the message "Caller is not the owner".
 
-- # Storage Details Report
+# Storage Details Report
 
-The following report describes the changes in storage that occurred during the execution of a transaction on the Ethereum address `0xCFC9f4...64B27477`.
+The following report describes the changes in storage that occurred during the execution of a transaction on the Ethereum address `0xF42070EBFcB1B467D5FEd5A6d3e5957bf263BdE5`.
 
 ## Ether Balances and Nonce
 
@@ -37,19 +40,16 @@ The Ether balance of the address did not change during the transaction. It remai
 
 ## Storage Changes
 
-Four storage slots were updated during the transaction:
+Two storage slots were updated during the contract creation transaction:
 
 1. **Storage Address 0x0000000000000000000000000000000000000000000000000000000000000000:** The initial value was empty. After the transaction, it was updated with the string "Hello World".
 
-2. **Storage Address 0x0000000000000000000000000000000000000000000000000000000000000001:** The initial value was `0x0`. After the transaction, it was updated with the value `0x1c042700057891c76d2c95b66bb09c441c5ebd2f`, which represents an Ethereum address.
+2. **Storage Address 0x0000000000000000000000000000000000000000000000000000000000000001:** The initial value was `0x0x0`. After the transaction, it was updated with the value `0x1c042700057891c76d2c95b66bb09c441c5ebd2f`, which represents an Ethereum address.
 
-3. **Storage Address 0x0000000000000000000000000000000000000000000000000000000000000002:** The initial value was `0`. After the transaction, it was updated with the value `1`.
-
-4. **Storage Address 0x405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace:** The initial value was `0x0`. After the transaction, it was updated with the value `0x1c042700057891c76d2c95b66bb09c441c5ebd2f`, which represents an Ethereum address.
 
 ## Conclusion
 
-The transaction resulted in the update of four storage slots. These changes likely represent the initialization of a smart contract, with the storage slots being used to store the contract's state. The Ethereum address `0x1c042700057891c76d2c95b66bb09c441c5ebd2f` is likely the owner of the contract, and the string "Hello World" is likely an initial state or message of the contract.
+The transaction resulted in the update of two storage slots. These changes likely represent the initialization of a smart contract, with the storage slots being used to store the contract's state. The Ethereum address `0x1c042700057891c76d2c95b66bb09c441c5ebd2f` is the owner of the contract, and the string "Hello World" is the initial state or message of the contract.
 
 ## Contract Code
 
@@ -108,7 +108,7 @@ The input data for the transaction was:
   - `[1]`: `0000000000000000000000000000000000000000000000000000000000000016`. This is the length of the string parameter in bytes.
   - `[2]`: `48656c6c6f20456e636f6465202d2047726f7570203800000000000000000000`. This is the data part of the string parameter, encoded in hexadecimal. When decoded, it reads "Hello Encode - Group 8".
 
-The transaction likely failed because the `setText(string newText)` function includes a `onlyOwner` modifier, and the transaction was not sent by the owner of the contract. Alternatively, the contract could have run out of gas if the provided gas limit was too low.
+The transaction failed because the `setText(string newText)` function includes a `onlyOwner` modifier, and the transaction was not sent by the owner of the contract. Alternatively, the contract could have run out of gas if the provided gas limit was too low.
 
 
 ![Failed Transaction](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/HelloWorld%20-%20Failed%20Transaction.png)
@@ -128,7 +128,7 @@ In the first transaction, the ownership of the contract was transferred to the e
 ### State Changes
 
 - The Ether balance of the owner's address decreased slightly due to the gas cost of the transaction.
-- The Ether balance of the miner (`0xFf58d7...8837E883`) increased by the same amount, representing the gas fee that was paid for the transaction.
+- The Ether balance of the miner (`0xFf58d7...8837E883`) increased by the same amount, representing the gas fee `0.000060890000267916` that was paid for the transaction.
 - No changes were made to the contract's storage, as the owner remained the same.
 
   ![Transfer Ownership](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Transfer%20Ownership%20New%20Owner.png)
@@ -140,7 +140,7 @@ In the second transaction, the ownership of the contract was transferred to a ne
 ### State Changes
 
 - The Ether balance of the original owner's address (`0x1c0427...1c5ebd2f`) decreased slightly due to the gas cost of the transaction.
-- The Ether balance of the miner (`0x000000...00000000`) increased by the same amount, representing the gas fee that was paid for the transaction.
+- The Ether balance of the miner (`0x000000...00000000`) increased by the same amount, representing the gas fee `0.00006792` that was paid for the transaction.
 - The contract's storage was updated. The storage address `0x0000000000000000000000000000000000000000000000000000000000000001`, which stores the owner of the contract, was updated with the new owner's address.
 
 ![Transfer Ownership newOwner](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Transfer%20Ownership%20New%20Owner.png)
@@ -156,7 +156,7 @@ While both transactions involved the `transferOwnership(address newOwner)` funct
 
 # Transaction - Function setText 
 
-This report describes a transaction that was executed on the Ethereum network. The transaction sucessfully executed the `setText(string newText)` function of the HelloWorld.sol contract `0xF42070EBFcB1B467D5FEd5A6d3e5957bf263BdE5`.
+This report describes a transaction that was executed on the Sepolia Testnet. The transaction sucessfully executed the `setText(string newText)` function of the HelloWorld.sol contract `0xF42070EBFcB1B467D5FEd5A6d3e5957bf263BdE5`.
 
 ## Ether Balances and Nonce
 
@@ -169,6 +169,8 @@ The Ether balance of the miner (`0x6a7aA9...f12F06a3`) increased by the same amo
 One storage slot was updated during the transaction:
 
 - **Storage Address 0x0000000000000000000000000000000000000000000000000000000000000000:** The initial value was "Hello World". After the transaction, it was updated with the string "Bonjour!".
+
+  ![Function setText](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/setText.png)
 
 ## Conclusion
 
