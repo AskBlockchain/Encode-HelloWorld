@@ -93,7 +93,8 @@ The transaction resulted in the update of four storage slots. These changes like
 
 # Transactions
 
-<img src="https://github.com/AskBlockchain/Encode-HelloWorld/blob/main/week1/HelloWorld%20-%20Failed%20Transaction.png" width="200" height="200">
+![HelloWorld - Failed Transaction](https://github.com/AskBlockchain/Encode-HelloWorld/blob/main/week1/HelloWorld%20-%20Failed%20Transaction.png)
+
 
 
 
