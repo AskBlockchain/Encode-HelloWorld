@@ -38,6 +38,16 @@ The following report describes the changes in storage that occurred during the e
 
 The Ether balance of the address did not change during the transaction. It remained at `0 Eth`. The nonce of the address also remained the same, at `1`, indicating that no new transactions were sent from this address.
 
+## Nonce
+In Ethereum, the nonce is a counter used to ensure each transaction is processed only once and in the correct order. It is also used to prevent replay attacks. When an account creates a transaction, the nonce of that account is incremented.
+
+In the context of this contract creation:
+- **Nonce Before Creation: '1'**
+- **Nonce After Creation: '2'**
+  
+This indicates that the account `0x1c0427...1c5ebd2f` had previously sent one transaction (hence the initial nonce of 1). The creation of this contract was the second transaction sent from this account, which is why the nonce increased to 2.
+
+
 ## Storage Changes
 
 Two storage slots were updated during the contract creation transaction:
@@ -49,7 +59,14 @@ Two storage slots were updated during the contract creation transaction:
 
 ## Conclusion
 
-The transaction resulted in the update of two storage slots. These changes likely represent the initialization of a smart contract, with the storage slots being used to store the contract's state. The Ethereum address `0x1c042700057891c76d2c95b66bb09c441c5ebd2f` is the owner of the contract, and the string "Hello World" is the initial state or message of the contract.
+The address of a new contract is determined by the creator's address and the nonce. Since the nonce of the `0x1c0427...1c5ebd2f` address was 1 before the contract creation, and the contract creation counts as a transaction, the nonce was incremented to 2 after the contract was created. The new contract's address (0xF42070...f263BdE5) is derived from the creator's address and the nonce.
+
+The transaction resulted in the update of two storage slots. These changes represent the initialization of a smart contract, with the storage slots being used to store the contract's state. The Ethereum address `0x1c042700057891c76d2c95b66bb09c441c5ebd2f` is the owner of the contract, and the string "Hello World" is the initial state or message of the contract.
+
+
+
+
+
 
 ## Contract Code
 
@@ -104,7 +121,7 @@ The input data for the transaction was:
 
 - `MethodID`: `0x5d3a1f9d`. This is the function signature for `setText(string)`.
 - `Parameters`:
-  - `[0]`: `0000000000000000000000000000000000000000000000000000000000000020`. This is an offset to the location of the data part of the first (and only) parameter.
+  - `[0]`: `0000000000000000000000000000000000000000000000000000000000000020`. This is an offset to the location of the data part of the first (and only) parameter. The input data is a string that is stored separatley and the argument in the function call is an offset that points to the location of this data. This way of handling complex data types is more efficient and allows the EVM to work with large amounts of data in a more manageable way.
   - `[1]`: `0000000000000000000000000000000000000000000000000000000000000016`. This is the length of the string parameter in bytes.
   - `[2]`: `48656c6c6f20456e636f6465202d2047726f7570203800000000000000000000`. This is the data part of the string parameter, encoded in hexadecimal. When decoded, it reads "Hello Encode - Group 8".
 
@@ -131,7 +148,7 @@ In the first transaction, the ownership of the contract was transferred to the e
 - The Ether balance of the miner (`0xFf58d7...8837E883`) increased by the same amount, representing the gas fee `0.000060890000267916` that was paid for the transaction.
 - No changes were made to the contract's storage, as the owner remained the same.
 
-  ![Transfer Ownership](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Transfer%20Ownership%20New%20Owner.png)
+  ![Transfer Ownership](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Transfer%20Ownership%20no%20new%20Owner.png)
 
 ## Transaction 2: Transfer to New Address
 
