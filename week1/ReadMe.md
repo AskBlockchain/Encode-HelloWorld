@@ -65,7 +65,7 @@ The transaction resulted in the update of two storage slots. These changes repre
 
 
 
-
+![State Change Contract Creation](https://raw.githubusercontent.com/AskBlockchain/Encode-HelloWorld/main/week1/Contract%20Creation%20State.png)
 
 
 ## Contract Code
