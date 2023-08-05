@@ -29,7 +29,7 @@
 ## Self delegation is another case that is handled inside this function
 
   ### When tried to add delegate vote by passing own address as delegate address in function parameter it reverts with following message.
-   > transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":`__"execution reverted: Self-delegation is disallowed."__`,"id":7942531669002897}
+   > transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":`__"execution reverted: Self-delegation is disallowed."__`,"id":7942531669005039}
 
   
 
