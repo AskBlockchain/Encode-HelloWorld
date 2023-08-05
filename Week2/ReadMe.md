@@ -17,7 +17,7 @@
   - ### Second transaction - Address 2 adds Address 3 as delegate
   <img width="947" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/47dce764-551f-4016-990b-8ee4c4261e0f">
 
-  - ### Third transaction - Revrts When Address 3 tries to add Address 1 as delegate
+  - ### Third transaction - Reverts When Address 3 tries to add Address 1 as delegate
   Revert message in remix terminal -
    > __"transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":"execution reverted: Found loop in delegation.","id":7942531669002302}"__
 
