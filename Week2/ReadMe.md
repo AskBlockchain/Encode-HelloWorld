@@ -19,8 +19,21 @@
 
   - ### Third transaction - Reverts When Address 3 tries to add Address 1 as delegate
     Revert message in remix terminal -
-     > __"transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":"execution reverted: Found loop in delegation.","id":7942531669002302}"__
+     > transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":__"execution reverted: Found loop in delegation."__,"id":7942531669002302}
 
+## Posibility of revoting through delegate - Should revert the attempt
+
+  ### Address - 0x251b187103823180E27b2052EFc11EB344C72E2B has already voted. When tried voting through delegate it reverts.
+   > transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":__"execution reverted: You already voted__.","id":7942531669002897}
+
+## Self delegation is another case that is handled inside this function
+
+  ### When tried to add delegate vote by passing own address as delegate address in function parameter it reverts with following message.
+   > transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":__"execution reverted: Self-delegation is disallowed."__,"id":7942531669002897}
+
+  
+
+  
 
 
   
