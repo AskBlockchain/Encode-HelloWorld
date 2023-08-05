@@ -12,14 +12,14 @@
   - After providing right to vote these address can now vote or add a delegate to vote on their behalf.
 
   - ### First transaction - Address 1 adds Address 2 as delegate
-  <img width="950" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/4c792740-263f-4c13-a0a0-3f63458bca7b">
+    <img width="950" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/4c792740-263f-4c13-a0a0-3f63458bca7b">
 
   - ### Second transaction - Address 2 adds Address 3 as delegate
-  <img width="947" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/47dce764-551f-4016-990b-8ee4c4261e0f">
+    <img width="947" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/47dce764-551f-4016-990b-8ee4c4261e0f">
 
   - ### Third transaction - Reverts When Address 3 tries to add Address 1 as delegate
-  Revert message in remix terminal -
-   > __"transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":"execution reverted: Found loop in delegation.","id":7942531669002302}"__
+    Revert message in remix terminal -
+     > __"transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":"execution reverted: Found loop in delegation.","id":7942531669002302}"__
 
 
 
