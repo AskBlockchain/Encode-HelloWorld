@@ -55,7 +55,7 @@ This report provides a summary of the contract deployment process, including the
 The above report provides detailed information about the contract deployment. It includes the addresses of the contracts before and after deployment, along with the state differences. Additionally, the changes in storage are listed for each storage address. This report helps to track the changes and state of the contracts during the deployment process.
 
 
-```
+```javascript
 import { ethers } from "ethers";
 import { Ballot__factory } from "../typechain-types";
 
@@ -150,6 +150,82 @@ main().catch((error) => {
 
   ### When tried to add delegate vote by passing own address as delegate address in function parameter it reverts with following message.
    > transact to Ballot.delegate errored: Returned error: {"jsonrpc":"2.0","error":`__"execution reverted: Self-delegation is disallowed."__`,"id":7942531669005039}
+> 
+
+
+# Delegate Vote
+
+This report provides details about a transaction involving two addresses and changes in state and storage.
+
+## Address: `0x87D51f...DC69729B`
+- Balance Before: 1.997228313945038693 Eth
+- Nonce: 2
+- Balance After: 1.997174744230992923 Eth
+- Nonce: 3
+- State Difference: 0.00005356971404577 Eth
+
+## Address: `0xf24A01...EFc392cDMiner`
+- Balance Before: 2,239.076096185185265627 Eth
+- Balance After: 2,239.076144830185265627 Eth
+- State Difference: 0.000048645 Eth
+
+## Address: `0xf6eC3f...a51F6EFe`
+- No balance change observed in this transaction
+
+## Storage Changes
+
+### Storage Address: `0x9121ca3a096a885350731140cce934de1b2997d62529e834bf6c096416b324f0`
+- Before: 0x0000000000000000000000000000000000000000000000000000000000000000
+- After: 0x0000000000000000000000000000000000000000000000000000000000000001
+
+The above report outlines the changes that occurred during the transaction. It includes the changes in balances and nonces for two addresses. Additionally, the report indicates that there were no balance changes for the address `0xf6eC3f...a51F6EFe`. Furthermore, the storage change at the specified address has been recorded.
+
+Please note that this report is based on the provided information and is specific to the transaction described above.
+
+```javascript
+import { ethers } from "ethers";
+import * as dotenv from 'dotenv';
+import { Ballot__factory } from "../typechain-types";
+dotenv.config();
+
+// Assuming that the Ballot.json file is in the same directory as this script
+import path from 'path';
+const ABI_FILE_PATH = require(path.resolve(__dirname, 'Ballot.json'));
+
+const delegatedTo = "0x1c042700057891c76d2c95b66bb09C441c5ebd2f";
+
+function setProvider() {
+  const provider = new ethers.JsonRpcProvider(process.env.PORTAL_ENDPOINT_URL ?? "sepolia");
+  return provider;
+}
+
+//Sender Private Key
+const privateKey = process.env.VOTER_PRIVATE_KEY;
+if (!privateKey) {
+throw new Error('PRIVATE_KEY environment variable not set');
+}
+
+// Create a wallet instance with the private key and connect it to the provider
+const wallet = new ethers.Wallet(privateKey);
+const provider = setProvider();
+const signer = wallet.connect(provider);
+
+
+async function main() {
+    const DEPLOYED_CONTRACT_ADDRESS = "0xf6eC3f13AFd908D3EFd3B8048e2aEe1da51F6EFe";
+    const provider = setProvider();
+    const ballot = new ethers.Contract(DEPLOYED_CONTRACT_ADDRESS, ABI_FILE_PATH.abi, signer);
+    const tx = await ballot.delegate(delegatedTo);
+    await tx.wait();
+    console.log("Delegated my vote to Jake: ", delegatedTo);
+}
+
+
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+```
 
   
 
