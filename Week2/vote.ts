@@ -47,13 +47,16 @@ vote(2).catch(console.error);
 
 /**
  *  @notice REPORT FOR THIS SCRIPT
- * Succesful voted for the proposal as the chairperson is the deployer of the contract and the one casting the vote
+ * Succesfull voted for the proposal as the chairperson is the deployer of the contract and the one casting the vote
  * The script would reverted if the wallet contract has no right to vote or has already voted
  * When the wallet interacts casting a vote the contract record that wallet to Voted in the voter struct
  * so it is unnable to vote again or change his vote
  * 
  * The function is called by a wallet with voting rights or the chairperson, and uses the function vote 
  * wich takes a number to represent the proposal to vote for.
+ * 
+ * Transaction Hash with the sucessfull interaction:
+ * 0xeb59815e92765b5f0398dbe345451e42049de6a897be902d7b7e787f945ca2b6
  * 
  * 
  */
