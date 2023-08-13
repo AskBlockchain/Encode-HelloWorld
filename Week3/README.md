@@ -7,7 +7,7 @@
 ## Trasactions 
   ### Deployment of Token 
     * Transaction Hash - https://sepolia.etherscan.io/tx/0xf67986986459fe36d0a1d9113fcde206294a542a7196627e04c82a7302417964
-    <img width="923" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/ad89aa91-4097-45be-8e95-36fd6319dc55">
+  <img width="923" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/ad89aa91-4097-45be-8e95-36fd6319dc55">
   ### Minting
     * Transaction Hash - https://sepolia.etherscan.io/tx/0xaa4fa3b800ab465158d2b42764a568c82e56e4a2edfdc42166810756fb40ce83
     <img width="916" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/10717669-d5f2-4d35-aec7-681472c015f3">
@@ -23,5 +23,6 @@
     * Transaction Hash - https://sepolia.etherscan.io/tx/0x23c4c9dfeb72b54cad7db81e5474f7fd8320ef029cb61ba4d1d8269476d53c00
     <img width="917" alt="image" src="https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/ae9edd11-0ebc-4e50-933c-15fb80df983c">
   ### Querying Result
-    ![image](https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/5373d8ed-0d6a-461e-aaaf-28804d1078a2)
+   ![image](https://github.com/AskBlockchain/Encode-HelloWorld/assets/85375791/afcbf4a3-0f6a-486a-bd8b-6d587e37602b)
+
 
