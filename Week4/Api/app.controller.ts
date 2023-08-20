@@ -37,4 +37,14 @@ export class AppController {
     const result = await this.appService.mintTokens(body.address);
     return result
   }
+
+  @Get('cast-vote/:proposal/:amount')
+  async castVote(
+    @Param('proposal') proposal: number,
+    @Param('amount') amount: string,
+  ): Promise<any> {
+    console.log('Received proposal:', proposal);
+    console.log('Received amount:', amount);
+    return this.appService.castVote(proposal, amount);
+  }
 }

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {ethers} from "ethers"
 import * as tokenJson from "./assets/token.json"
-const CONTRACT_ADDRESS = "0x9f9344d689c6c44535Cbf0073Dc0DF602B04fF65"
+const CONTRACT_ADDRESS = "0x275747A17ccb975C68F7708927D71Bb440B16fF8"
+
 
 
 @Injectable()
@@ -14,6 +15,7 @@ export class AppService {
       process.env.RPC_ENDPOINT_URL ?? "",);
     this.wallet = new ethers.Wallet(process.env.PRIVATE_KEY ?? "",this.provider)
     this.contract = new ethers.Contract(CONTRACT_ADDRESS,tokenJson.abi,this.wallet);
+
 
   }
 getContractAddress(): {address:string}{
@@ -60,6 +62,19 @@ getContractAddress(): {address:string}{
         console.log(error);
         return {result:error};
       }
+  }
+
+  async castVote(proposal: number, amount: string) {
+    console.log(`Voting to proposal ${proposal}...`);
+
+    const voteTx = await this.contract.vote(proposal, ethers.parseEther(amount));
+
+    const receipt = await voteTx.wait();
+    console.log(
+      `Voted to proposal ${proposal}! Transaction hash: ${receipt.hash}`,
+    );
+
+    return { result: true, txHash: receipt.hash };
   }
 
 }

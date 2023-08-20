@@ -1,19 +1,27 @@
-import { useAccount,useBalance,useNetwork } from "wagmi";
+import {   createConfig,
+  useAccount,
+  useBalance,
+  useContractRead,
+  useContractWrite,
+  useNetwork,
+  useSignMessage,useSwitchNetwork,
+usePrepareContractWrite} from "wagmi";
+import { configureChains } from "wagmi";
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { publicProvider } from "wagmi/providers/public";
+import { mainnet, sepolia } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
 import styles from "./instructionsComponent.module.css";
-import { useSignMessage } from "wagmi";
 import { useState,useEffect } from "react";
-import { useContractRead } from "wagmi";
 import {ethers} from "ethers"
 import * as dotenv from 'dotenv';
-
-
 
 export default function InstructionsComponent() {
   return (
     <div className={styles.container}>
       <header className={styles.header_container}>
         <div className={styles.header}>
-          <h1>My App</h1>
+          <h1>Week 4 Project</h1>
         </div>
       </header>
       <p className={styles.get_started}>
@@ -22,6 +30,7 @@ export default function InstructionsComponent() {
     </div>
   );
 }
+
 
 function PageBody(){
   return (
@@ -33,18 +42,30 @@ function PageBody(){
 
 function WalletInfo (){
   const { address, isConnecting, isDisconnected } = useAccount()
-  const { chain } = useNetwork();
+  const { chains,publicClient } = configureChains(
+    [sepolia],
+    [
+      alchemyProvider({ apiKey: "" }),
+      publicProvider(),
+    ]
+  );
 
   if (address)
     return (
       <div>
+        {chains && (
+            <div>Available chains: {chains.map((chain) => chain.name)}</div>
+          )}
         <p>Your account address is {address}</p>
-        <p>Connected to the network {chain?.name}</p>
-        <WalletBalance address={address}></WalletBalance>
-        <WalletAction></WalletAction>
+        {/* <p>Connected to the network {chain?.name}</p> */}
+        {/* <WalletBalance address={address}></WalletBalance> */}
+        {/* <WalletAction></WalletAction> */}
         <WinnerName></WinnerName>
         {/* <TokenBalance address={address}></TokenBalance> */}
         <RequestTokens address={address}></RequestTokens>
+        <Vote address={address}></Vote>
+        <GetBtcPrice></GetBtcPrice>
+        <CastVote></CastVote>
       </div>
     );
   if (isConnecting)
@@ -67,46 +88,6 @@ function WalletInfo (){
 
 }
 
-function WalletAction() {
-  const [signatureMessage, setSignatureMessage] = useState("");
-
-  const { data, isError, isLoading, isSuccess, signMessage } = useSignMessage();
-  return (
-    <div>
-      <form>
-        <label>
-          Enter the message to be signed:
-          <input
-            type="text"
-            value={signatureMessage}
-            onChange={(e) => setSignatureMessage(e.target.value)}
-          />
-        </label>
-      </form>
-      <button
-        disabled={isLoading}
-        onClick={() =>
-          signMessage({
-            message: signatureMessage,
-          })
-        }
-      >
-        Sign message
-      </button>
-      {isSuccess && <div>Signature: {data}</div>}
-      {isError && <div>Error signing message</div>}
-    </div>
-  );
-}
-
-function WalletBalance(params:{address:any}){
-  const {data,isError,isLoading} = useBalance({address:params.address})
-  if (isLoading) return <div>Fetching Balance</div>
-  if(isError) return <div>Error Fetching Balance</div>
-  return (<div>
-  Balance : {data?.formatted} {data?.symbol}
-  </div>)
-}
 
 function WinnerName() {
   
@@ -114,7 +95,7 @@ function WinnerName() {
 
 
     const fetchWinner = async () => {
-      const provider = new ethers.JsonRpcProvider("RPC");
+      const provider = new ethers.JsonRpcProvider("");
       const contractAddress = '0x275747A17ccb975C68F7708927D71Bb440B16fF8';
       const abi = [
         {
@@ -234,970 +215,329 @@ function WinnerName() {
   );
 }
 
-// function TokenBalance(params: { address: `0x${string}` }) {
-//   const { data, isError, isLoading } = useContractRead({
-//     address: "0x373BE6eABf54859701DfA846eA28B001850b72d6",
-//   abi: [
-//     {
-//       "inputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "constructor"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "InvalidShortString",
-//       "type": "error"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "string",
-//           "name": "str",
-//           "type": "string"
-//         }
-//       ],
-//       "name": "StringTooLong",
-//       "type": "error"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "owner",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "spender",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": false,
-//           "internalType": "uint256",
-//           "name": "value",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "Approval",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "delegator",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "fromDelegate",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "toDelegate",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "DelegateChanged",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "delegate",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": false,
-//           "internalType": "uint256",
-//           "name": "previousBalance",
-//           "type": "uint256"
-//         },
-//         {
-//           "indexed": false,
-//           "internalType": "uint256",
-//           "name": "newBalance",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "DelegateVotesChanged",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [],
-//       "name": "EIP712DomainChanged",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "bytes32",
-//           "name": "previousAdminRole",
-//           "type": "bytes32"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "bytes32",
-//           "name": "newAdminRole",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "name": "RoleAdminChanged",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "sender",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "RoleGranted",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "sender",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "RoleRevoked",
-//       "type": "event"
-//     },
-//     {
-//       "anonymous": false,
-//       "inputs": [
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "from",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": true,
-//           "internalType": "address",
-//           "name": "to",
-//           "type": "address"
-//         },
-//         {
-//           "indexed": false,
-//           "internalType": "uint256",
-//           "name": "value",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "Transfer",
-//       "type": "event"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "CLOCK_MODE",
-//       "outputs": [
-//         {
-//           "internalType": "string",
-//           "name": "",
-//           "type": "string"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "DEFAULT_ADMIN_ROLE",
-//       "outputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "DOMAIN_SEPARATOR",
-//       "outputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "MINTER_ROLE",
-//       "outputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "owner",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "spender",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "allowance",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "spender",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "amount",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "approve",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "balanceOf",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint32",
-//           "name": "pos",
-//           "type": "uint32"
-//         }
-//       ],
-//       "name": "checkpoints",
-//       "outputs": [
-//         {
-//           "components": [
-//             {
-//               "internalType": "uint32",
-//               "name": "fromBlock",
-//               "type": "uint32"
-//             },
-//             {
-//               "internalType": "uint224",
-//               "name": "votes",
-//               "type": "uint224"
-//             }
-//           ],
-//           "internalType": "struct ERC20Votes.Checkpoint",
-//           "name": "",
-//           "type": "tuple"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "clock",
-//       "outputs": [
-//         {
-//           "internalType": "uint48",
-//           "name": "",
-//           "type": "uint48"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "decimals",
-//       "outputs": [
-//         {
-//           "internalType": "uint8",
-//           "name": "",
-//           "type": "uint8"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "spender",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "subtractedValue",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "decreaseAllowance",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "delegatee",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "delegate",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "delegatee",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "nonce",
-//           "type": "uint256"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "expiry",
-//           "type": "uint256"
-//         },
-//         {
-//           "internalType": "uint8",
-//           "name": "v",
-//           "type": "uint8"
-//         },
-//         {
-//           "internalType": "bytes32",
-//           "name": "r",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "bytes32",
-//           "name": "s",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "name": "delegateBySig",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "delegates",
-//       "outputs": [
-//         {
-//           "internalType": "address",
-//           "name": "",
-//           "type": "address"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "eip712Domain",
-//       "outputs": [
-//         {
-//           "internalType": "bytes1",
-//           "name": "fields",
-//           "type": "bytes1"
-//         },
-//         {
-//           "internalType": "string",
-//           "name": "name",
-//           "type": "string"
-//         },
-//         {
-//           "internalType": "string",
-//           "name": "version",
-//           "type": "string"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "chainId",
-//           "type": "uint256"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "verifyingContract",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "bytes32",
-//           "name": "salt",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "uint256[]",
-//           "name": "extensions",
-//           "type": "uint256[]"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "timepoint",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "getPastTotalSupply",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "timepoint",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "getPastVotes",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "name": "getRoleAdmin",
-//       "outputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "getVotes",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "grantRole",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "hasRole",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "spender",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "addedValue",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "increaseAllowance",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "to",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "amount",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "mint",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "name",
-//       "outputs": [
-//         {
-//           "internalType": "string",
-//           "name": "",
-//           "type": "string"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "owner",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "nonces",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "numCheckpoints",
-//       "outputs": [
-//         {
-//           "internalType": "uint32",
-//           "name": "",
-//           "type": "uint32"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "owner",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "spender",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "value",
-//           "type": "uint256"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "deadline",
-//           "type": "uint256"
-//         },
-//         {
-//           "internalType": "uint8",
-//           "name": "v",
-//           "type": "uint8"
-//         },
-//         {
-//           "internalType": "bytes32",
-//           "name": "r",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "bytes32",
-//           "name": "s",
-//           "type": "bytes32"
-//         }
-//       ],
-//       "name": "permit",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "renounceRole",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "bytes32",
-//           "name": "role",
-//           "type": "bytes32"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "account",
-//           "type": "address"
-//         }
-//       ],
-//       "name": "revokeRole",
-//       "outputs": [],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "bytes4",
-//           "name": "interfaceId",
-//           "type": "bytes4"
-//         }
-//       ],
-//       "name": "supportsInterface",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "symbol",
-//       "outputs": [
-//         {
-//           "internalType": "string",
-//           "name": "",
-//           "type": "string"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [],
-//       "name": "totalSupply",
-//       "outputs": [
-//         {
-//           "internalType": "uint256",
-//           "name": "",
-//           "type": "uint256"
-//         }
-//       ],
-//       "stateMutability": "view",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "to",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "amount",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "transfer",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     },
-//     {
-//       "inputs": [
-//         {
-//           "internalType": "address",
-//           "name": "from",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "address",
-//           "name": "to",
-//           "type": "address"
-//         },
-//         {
-//           "internalType": "uint256",
-//           "name": "amount",
-//           "type": "uint256"
-//         }
-//       ],
-//       "name": "transferFrom",
-//       "outputs": [
-//         {
-//           "internalType": "bool",
-//           "name": "",
-//           "type": "bool"
-//         }
-//       ],
-//       "stateMutability": "nonpayable",
-//       "type": "function"
-//     }
-//   ],
-//     functionName: "balanceOf",
-//     args: [params.address],
-//   });
+function RequestTokens(params:{address:`0x${string}`}) {
+  const [data, setData] = useState<any>("");
+  const [isLoading, setLoading] = useState(false);
+  const body = {address:params.address}
+  
+  const handleClick = () => {
+    setLoading(true)
+    fetch("http://localhost:3001/mint-tokens",{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body),
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data)
+      setData(data);
+      setLoading(false);
+    });
+  };
+  useEffect(() => {
+    if (isLoading) {
+      setData(""); // Reset data when loading starts
+    }
+  }, [isLoading]);
+  
+  if (isLoading) return <p>Minting Tokens...</p>;
 
-//   const balance = typeof data === "number" ? data : 0;
+  return (
+    <div>
+      <p>Tx Hash: {data.result}</p>
+      <button onClick={handleClick}>
+        Mint tokens
+      </button>
 
-//   if (isLoading) return <div>Fetching balance…</div>;
-//   if (isError) return <div>Error fetching balance</div>;
-//   return <div>Balance: {balance}</div>;
-// }
+    </div>
+  );
+}
 
-  function RequestTokens(params:{address:`0x${string}`}) {
-    const [data, setData] = useState<any>("");
-    const [isLoading, setLoading] = useState(false);
-    const body = {address:params.address}
-    
-    const handleClick = () => {
-      setLoading(true)
-      fetch("http://localhost:3001/mint-tokens",{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(body),
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data)
-        setData(data);
-        setLoading(false);
-      });
-    };
-    useEffect(() => {
-      if (isLoading) {
-        setData(""); // Reset data when loading starts
+function Vote(params:{address:`0x${string}`}) {
+  const {config,error,isError}= usePrepareContractWrite({
+    address: "0x895E11033225Dd644cbca8E1DD319bBcd6538208",
+
+    abi : [{"inputs":[{"internalType":"bytes32[]","name":"proposalNames","type":"bytes32[]"},{"internalType":"address","name":"_tokenContract","type":"address"},{"internalType":"uint256","name":"_targetBlockNumber","type":"uint256"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"proposal","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Vote","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"proposals","outputs":[{"internalType":"bytes32","name":"name","type":"bytes32"},{"internalType":"uint256","name":"voteCount","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"targetBlockNumber","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tokenContract","outputs":[{"internalType":"contract IVoteToken","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"proposal","type":"uint256"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"vote","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"votingPower","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"votingPowerSpent","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winnerName","outputs":[{"internalType":"bytes32","name":"winnerName_","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"winningProposal","outputs":[{"internalType":"uint256","name":"winningProposal_","type":"uint256"}],"stateMutability":"view","type":"function"}]
+
+      ,functionName:"vote",
+      account:params.address,
+       args: [1,1]
+       
+  })
+  const{data,write} = useContractWrite(config)
+  return (
+    <div>
+    <button disabled={!write} onClick={() => write()}>
+      Vote
+    </button>
+    {isError && <div>Error: {error.message}</div>}
+  </div>
+  );
+}
+
+function GetBtcPrice(){
+      const [btcPrice, setBtcPrice] = useState(null);
+      const fetchPrice = async () => {
+        const provider = new ethers.JsonRpcProvider("");
+        const contractAddress = '0x4f4DF538e4384214E40C8D228B76c4B1150062c9';
+        const abi = [
+          {
+            inputs: [
+              {
+                internalType: "address payable",
+                name: "_tellorAddress",
+                type: "address",
+              },
+            ],
+            stateMutability: "nonpayable",
+            type: "constructor",
+          },
+          {
+            inputs: [{ internalType: "uint256", name: "maxTime", type: "uint256" }],
+            name: "getBtcSpotPrice",
+            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "getDataAfter",
+            outputs: [
+              { internalType: "bytes", name: "_value", type: "bytes" },
+              {
+                internalType: "uint256",
+                name: "_timestampRetrieved",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "getDataBefore",
+            outputs: [
+              { internalType: "bytes", name: "_value", type: "bytes" },
+              {
+                internalType: "uint256",
+                name: "_timestampRetrieved",
+                type: "uint256",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "getIndexForDataAfter",
+            outputs: [
+              { internalType: "bool", name: "_found", type: "bool" },
+              { internalType: "uint256", name: "_index", type: "uint256" },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "getIndexForDataBefore",
+            outputs: [
+              { internalType: "bool", name: "_found", type: "bool" },
+              { internalType: "uint256", name: "_index", type: "uint256" },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+              { internalType: "uint256", name: "_maxAge", type: "uint256" },
+              { internalType: "uint256", name: "_maxCount", type: "uint256" },
+            ],
+            name: "getMultipleValuesBefore",
+            outputs: [
+              { internalType: "bytes[]", name: "_values", type: "bytes[]" },
+              { internalType: "uint256[]", name: "_timestamps", type: "uint256[]" },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [{ internalType: "bytes32", name: "_queryId", type: "bytes32" }],
+            name: "getNewValueCountbyQueryId",
+            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "getReporterByTimestamp",
+            outputs: [{ internalType: "address", name: "", type: "address" }],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_index", type: "uint256" },
+            ],
+            name: "getTimestampbyQueryIdandIndex",
+            outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [],
+            name: "idMappingContract",
+            outputs: [
+              {
+                internalType: "contract IMappingContract",
+                name: "",
+                type: "address",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "isInDispute",
+            outputs: [{ internalType: "bool", name: "", type: "bool" }],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              { internalType: "bytes32", name: "_queryId", type: "bytes32" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+            ],
+            name: "retrieveData",
+            outputs: [{ internalType: "bytes", name: "", type: "bytes" }],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [{ internalType: "address", name: "_addy", type: "address" }],
+            name: "setIdMappingContract",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function",
+          },
+          {
+            inputs: [],
+            name: "tellor",
+            outputs: [
+              { internalType: "contract ITellor", name: "", type: "address" },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [{ internalType: "bytes32", name: "_id", type: "bytes32" }],
+            name: "valueFor",
+            outputs: [
+              { internalType: "int256", name: "_value", type: "int256" },
+              { internalType: "uint256", name: "_timestamp", type: "uint256" },
+              { internalType: "uint256", name: "_statusCode", type: "uint256" },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+        ];
+        const contract = new ethers.Contract(contractAddress, abi, provider);
+        const btcSpotPrice = await contract.getBtcSpotPrice(60 * 60 * 24 * 90);
+        setBtcPrice(btcSpotPrice.toString());
+        console.log(btcSpotPrice)
       }
-    }, [isLoading]);
-    
-    if (isLoading) return <p>Minting Tokens...</p>;
-
     return (
       <div>
-        <p>Tx Hash: {data.result}</p>
-        <button onClick={handleClick}>
-          Mint tokens
+        <p>BtcPrice: {btcPrice}</p>
+        <button onClick={() => fetchPrice()}>
+          Get Btc Price
         </button>
-
       </div>
     );
-  }
+    }
 
+    function CastVote() {
+      const [proposal, setProposal] = useState<number | undefined>();
+      const [amount, setAmount] = useState("");
+    
+      const [data, setData] = useState<any>(null);
+      const [isLoading, setLoading] = useState(false);
+    
+      if (isLoading) return <p>Voting...</p>;
+    
+      return (
+        <div>
+          <form>
+            <label>
+              Enter the proposal id you want to vote:
+              <input
+                type="number"
+                value={proposal !== undefined ? proposal : ""}
+                onChange={(e) => setProposal(parseInt(e.target.value))}
+              />
+            </label>
+    
+            <br />
+            <label>
+              Enter the amount:
+              <input
+                type="string"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </label>
+          </form>
+    
+          <div>
+            { !data && (
+              <button
+                disabled={isLoading}
+                onClick={() => {
+                  setLoading(true);
+                  fetch(`http://localhost:3001/cast-vote/${proposal}/${amount}`)
+                  .then((res) => res.json())
+                  .then((data) => {
+                    setData(data);
+                    setLoading(false);
+                  });
+                }}
+              >
+                Vote
+              </button>
+            )}
+          </div>
+    
+          <div>
+            {data && (
+              <div>
+                <p>Voting {data.result ? "success" : "failed"}</p>
+                <p>Transaction Hash: {data.txHash}</p>
+              </div>
+            )}
+          </div>
+    
+        
+        </div>
+      )
+    }
