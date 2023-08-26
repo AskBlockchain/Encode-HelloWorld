@@ -20,7 +20,7 @@ In this report, we document the process of connecting a frontend application to 
 To achieve the goal of requesting voting tokens through the API, we first built a frontend function that enables the minting of tokens upon button click. The function requires the user's address as a parameter, which is then passed to the backend via an API call.
 
 Frontend Function:
-```
+```typescript
 function RequestTokens(params:{address:`0x${string}`}) {
 
 const [data, setData] = useState<any>("");
@@ -73,7 +73,7 @@ Mint tokens
 ```
 
 Backend Controller (`app.controller.ts`):
-```  
+```typescript 
 @Post("mint-tokens")
 async mintTokens(@Body() body:MintTokenDto){
 console.log({ body })
@@ -84,7 +84,7 @@ return result
 ```
 Backend Service (`app.service.ts`):
 
-```
+```typescript
 async mintTokens(address:string) {
 
 try{
@@ -141,7 +141,7 @@ For querying data from the `TokenizedBallot` contract, we implemented view funct
 
 Frontend Querying Function for Winner Name:
 
-```
+```typescript
 function WinnerName() {
 
 const [winnerName, setWinnerName] = useState("");
@@ -187,7 +187,7 @@ Winner
 
 Function Querying for BTC spot price trought Tellor Oracle:
 To ensure accurate and up-to-date data for the BTC spot price, we have implemented a function called `GetBtcPrice`. This function leverages the Tellor Oracle to retrieve the latest BTC spot price from the blockchain. Through the use of this function, we enable users to easily access real-time BTC spot price information.
-```
+```typescript
 function GetBtcPrice(){
 
 const [btcPrice, setBtcPrice] = useState(null);
@@ -240,7 +240,7 @@ Frontend Function:
 
 On the frontend, users can cast their votes using a simple and intuitive user interface. The UI consists of input fields for the proposal index and the voting amount. Once the user provides these inputs, they can click the "Vote" button to initiate the voting process. A loading status is displayed during the voting transaction.
 
-```
+```typescript
 function CastVote() {
 
 const [proposal, setProposal] = useState<number | undefined>();
@@ -357,7 +357,7 @@ Vote
 Backend Controller (`app.controller.ts`):
 
 In the backend, the API endpoint `/cast-vote/:proposal/:amount` handles voting requests. Users provide the proposal index and the amount of tokens they wish to vote. These parameters are extracted using the `@Param` decorator and then passed to the corresponding service function.
-```
+```typescript
 @Get('cast-vote/:proposal/:amount')
 
 async castVote(
@@ -383,7 +383,7 @@ Backend Service (`app.service.ts`):
 
 The service function `castVote` receives the proposal index and the voting amount. It orchestrates the voting process by invoking the `vote` method from the contract. The method performs the vote and returns a transaction object. Upon successful completion of the transaction, the function returns the result along with the transaction hash.
 
-```
+```typescript
 async castVote(proposal: number, amount: string) {
 
 console.log(`Voting to proposal ${proposal}...`);
@@ -407,7 +407,7 @@ return { result: true, txHash: receipt.hash };
 
 Also we made a implementation using Rainbow kit and Wagmi Libraries for interact with the vote function from the ui, it takes 2 step as prepares the settings before interacting with the blockchain.
 
-```
+```typescript
 function Vote(params:{address:`0x${string}`}) {
 
 const {config,error,isError}= usePrepareContractWrite({
