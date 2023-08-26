@@ -52,7 +52,7 @@ export default function InstructionsComponent() {
     const { chains, publicClient } = configureChains(
       [sepolia],
       [
-        alchemyProvider({ apiKey: "PVsdQRGuGDwT2mm_Hs5ua-cepAVD0caw" }),
+        alchemyProvider({ apiKey: "" }),
         publicProvider(),
       ]
     );
