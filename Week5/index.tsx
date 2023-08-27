@@ -1,3 +1,4 @@
+/* The Bet component is not properly working, a ratio may not be set correct in deployment of lottery token - brandon */
 import {
   useAccount,
   useBalance,
