@@ -1,3 +1,5 @@
+
+/* This is the contract i used with the index.tsx in the repo currently 8/28 -brandon  */ 
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity 0.8.19;
 
