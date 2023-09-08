@@ -27,8 +27,10 @@ contract MyAuction is Ownable {
 
     uint256 private fee = 2 ether;
 
+    mapping(uint256 => address) public auctionOwners; //a separate mapping for ownership of each auction.
+
     struct Auction {
-        address owner;
+        address owner; //Current owner of the auction item
         string title;
         string image;
         uint256 timestamp;
@@ -44,7 +46,7 @@ contract MyAuction is Ownable {
     function createAuction(string calldata _title, string calldata _image, uint256 _startingPrice, uint256 _timestamp) public {
         uint256 endTimestamp = block.timestamp + (_timestamp * 1 minutes);
         Auction memory auction = Auction({
-            owner: msg.sender,
+            owner: msg.sender,  // Initially, the creator is the owner
             title: _title,
             image: _image,
             timestamp: endTimestamp,  
@@ -56,6 +58,7 @@ contract MyAuction is Ownable {
         });
 
         auctions.push(auction);
+        auctionOwners[auctions.length - 1] = msg.sender; // Record the initial owner
 
         emit AuctionStarted();
     }
@@ -71,7 +74,8 @@ contract MyAuction is Ownable {
 
         uint256 lastBidderIndex = auction.bidders.length - 1;
         address newOwner = auction.bidders[lastBidderIndex];
-        auction.owner = newOwner;
+        auctionOwners[auctionId] = newOwner; // Update the ownership
+
 
         for (uint256 i = 0; i < lastBidderIndex; i++) {
             address tempBidder = auction.bidders[i];
@@ -84,7 +88,7 @@ contract MyAuction is Ownable {
         auction.bidders = new address[](0); // Clear the bidders array after processing
         auction.bids = new uint256[](0);     // Clear the bids array after processing
 
-        removeAuction(auctionId);
+        // removeAuction(auctionId);
 
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success, "Transaction Failed");
@@ -115,14 +119,12 @@ contract MyAuction is Ownable {
         return fee;
     }
     
-    function removeAuction(uint256 auctionId) public {
-        require(auctionId < auctions.length, "Auction ID out of bounds");
-
-        // To remove an element from an array, we can replace the element to be removed with the last element in the array
-        // and then reduce the array's length by 1.
-        auctions[auctionId] = auctions[auctions.length - 1];
-        auctions.pop();
+    
+    // Function to retrieve the owner of a specific auction.
+    function getAuctionOwner(uint256 auctionId) public view returns (address) {
+        return auctionOwners[auctionId];
     }
+
 
     function ownerFundsWithdraw() public onlyOwner {
         (bool success, ) = owner().call{value: address(this).balance}("");
