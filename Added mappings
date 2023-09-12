@@ -1,0 +1,41 @@
+/**
+ *Submitted for verification at Etherscan.io on 2023-07-27
+*/
+
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+
+contract HelloWorld {
+    string private text;
+    address public owner;
+    mapping(address => bool) public owners;
+
+    constructor() {
+        text = "Hello World";
+        owner = msg.sender;
+        owners[msg.sender] = true;
+    }
+
+    function addOwner(address _newOwner) public onlyOwner{
+        require(!owners[_newOwner], "Already in owner list");
+        owners[_newOwner] = true;
+    }
+
+    function helloWorld() public view returns (string memory) {
+        return text;
+    }
+
+    function setText(string calldata newText) public onlyOwner {
+        text = newText;
+    }
+
+    function transferOwnership(address newOwner) public onlyOwner {
+        owner = newOwner;
+    }
+
+    modifier onlyOwner()
+    {
+        require (owners[msg.sender], "Caller is not the owner");                     
+        _;
+    }
+}
